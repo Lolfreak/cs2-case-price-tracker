@@ -1,6 +1,6 @@
 # 📦 CS2 Case Price Tracker
 
-A Google Sheets + Google Apps Script tool that automatically tracks CS2 case prices from CSFloat, displays your portfolio value in SGD, and sends Discord alerts when prices spike or drop.
+A Google Sheets + Google Apps Script tool that automatically tracks CS2 case prices from CSFloat, displays your portfolio value in SGD, and sends Discord alerts when prices spike or drop. Another version without the discord alerts is [here](https://github.com/Lolfreak/cs2-case-price-tracker/blob/092c4def29dce409cb1c06f39a1a235cabb7de17/cs2casetrackerwithoutdiscord.gs).
 
 ![CS2 Case Price Tracker](https://github.com/Lolfreak/cs2-case-price-tracker/blob/fefa02b4e90d3727e839184207725289cc2a7bad/readmepictures/cs2casetrackergooglesheetview.png)
 
@@ -45,7 +45,7 @@ A Google Sheets + Google Apps Script tool that automatically tracks CS2 case pri
    ![CSFLOATAPIKEY](https://github.com/Lolfreak/cs2-case-price-tracker/blob/46374d9e40c9abc1b7d4c8e77ed3bd3f5888bb3f/readmepictures/csfloatapikey.png)
 6. Click **Save** (💾)
 
-### Step 3 - Set up Discord Webhook
+### Step 3 - Set up Discord Webhook (Skip to Step 5 if not configuring the Discord Webhook)
 1. In your Discord server, right-click the channel you want alerts in
 2. Go to **Edit Channel → Integrations → Webhooks → New Webhook**
 4. Give it a name and profile picture, then click **Copy Webhook URL**
@@ -196,7 +196,11 @@ All 44 CS2 cases sorted from newest to oldest:
 - **Discord Webhooks** - price spike notifications
 
 ---
+## Debugging
 
+I have added a test function to debug the Discord Webhook. Just click on run on the Apps Script to test your Webhook.
+
+![DiscordWebhookTest](https://github.com/Lolfreak/cs2-case-price-tracker/blob/57fd51b9033f734ee076cbe4aace4e89edea8543/readmepictures/testdiscordwebhook.png)
 ## License
 
 MIT License - feel free to fork and modify for your own use.
