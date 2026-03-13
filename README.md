@@ -118,7 +118,7 @@ You can adjust these constants at the top of `cs2casetracker.gs`:
 |---|---|---|
 | `CSFLOAT_API_KEY` | `"YOUR_API_KEY_HERE"` | Your CSFloat API key |
 | `DISCORD_WEBHOOK_URL` | `"YOUR_WEBHOOK_URL_HERE"` | Your Discord webhook URL |
-| `ROLE_ID` | `<@YOUR_ROLE_ID_HERE> | Your Discord Role ID |
+| `ROLE_ID` | `<@YOUR_ROLE_ID_HERE>` | Your Discord Role ID |
 | `ALERT_THRESHOLD` | `0.10` | Price change % to trigger alert (0.10 = 10%) |
 | `SHEET_NAME` | `"CS2 Case Price Tracker"` | Name of the Google Sheet tab |
 
