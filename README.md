@@ -83,7 +83,8 @@ A Google Sheets + Google Apps Script tool that automatically tracks CS2 case pri
 1. Click **📦 CS2 Tracker → 📸 Save Price Snapshot** — saves today's prices as the baseline
 2. Click **📦 CS2 Tracker → ⏰ Schedule Automatic Alert Checks** — checks every 2 hours
 3. Optionally click **📦 CS2 Tracker → 🔔 Check Price Alerts Now** to test immediately
-![FirstSetup](https://github.com/Lolfreak/cs2-case-price-tracker/blob/06af6a428ba7ab901011739b84bc1f71e7713b2f/readmepictures/cs2casetrackeroptions.png)
+
+    ![FirstSetup](https://github.com/Lolfreak/cs2-case-price-tracker/blob/06af6a428ba7ab901011739b84bc1f71e7713b2f/readmepictures/cs2casetrackeroptions.png)
 
 ---
 
