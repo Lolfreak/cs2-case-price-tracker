@@ -5,7 +5,7 @@
 // ============================================================
 
 const CSFLOAT_API_KEY = "YOUR_API_KEY_HERE"; // ← Paste your API key
-const SHEET_NAME = "CS2 Case Tracker";
+const SHEET_NAME = "CS2 Case Price Tracker";
 
 // All CS2 cases grouped by category (exact Steam market_hash_name)
 const CASES = [
