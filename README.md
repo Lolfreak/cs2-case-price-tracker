@@ -40,7 +40,7 @@ A Google Sheets + Google Apps Script tool that automatically tracks CS2 case pri
 4. Delete the default code and paste the entire contents of `Code.gs`
 5. On line 7, replace `"YOUR_API_KEY_HERE"` with your CSFloat API key:
    ```js
-   const CSFLOAT_API_KEY = "your-api-key-here";
+   const CSFLOAT_API_KEY = "YOUR_API_KEY_HERE";
    ```
    ![CSFLOATAPIKEY](https://github.com/Lolfreak/cs2-case-price-tracker/blob/46374d9e40c9abc1b7d4c8e77ed3bd3f5888bb3f/readmepictures/csfloatapikey.png)
 6. Click **Save** (💾)
@@ -52,9 +52,9 @@ A Google Sheets + Google Apps Script tool that automatically tracks CS2 case pri
 ![DiscordWebHook](https://github.com/Lolfreak/cs2-case-price-tracker/blob/e558540dcac6ee5f5e6e3ebcd432c10a5e9c5ad1/readmepictures/discordwebhookcreation.png)
 5. In the script, replace `"YOUR_WEBHOOK_URL_HERE"`:
    ```js
-   const DISCORD_WEBHOOK_URL = "your-webhook-url-here";
+   const DISCORD_WEBHOOK_URL = "YOUR_WEBHOOK_URL_HERE";
    ```
-   ![WebhookURL](https://github.com/Lolfreak/cs2-case-price-tracker/blob/06af6a428ba7ab901011739b84bc1f71e7713b2f/readmepictures/discordwebhookurl.png)
+   ![WebhookURL](https://github.com/Lolfreak/cs2-case-price-tracker/blob/4e7556c1520d170c7a37a954ad121f4abb23b717/readmepictures/discordwebhookurl.png)
 
 ### Step 4 - Set up Discord Role Ping
 1. In Discord, go to **Server Settings → Roles**
@@ -63,7 +63,7 @@ A Google Sheets + Google Apps Script tool that automatically tracks CS2 case pri
    ```js
    content: "<@&YOUR_ROLE_ID_HERE>",
    ```
-   ![RoleID](https://github.com/Lolfreak/cs2-case-price-tracker/blob/06af6a428ba7ab901011739b84bc1f71e7713b2f/readmepictures/discordrole.png)
+   ![RoleID](https://github.com/Lolfreak/cs2-case-price-tracker/blob/4e7556c1520d170c7a37a954ad121f4abb23b717/readmepictures/discordrole.png)
 ### Step 5 - Build the Sheet
 1. Go back to your Google Sheet and **refresh the page**
 2. A **📦 CS2 Tracker** menu will appear in the top bar
