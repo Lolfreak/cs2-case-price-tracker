@@ -45,7 +45,7 @@ A Google Sheets + Google Apps Script tool that automatically tracks CS2 case pri
    ![CSFLOATAPIKEY](https://github.com/Lolfreak/cs2-case-price-tracker/blob/46374d9e40c9abc1b7d4c8e77ed3bd3f5888bb3f/readmepictures/csfloatapikey.png)
 6. Click **Save** (💾)
 
-### Step 3 - Set up Discord Webhook (Skip to Step 5 if not configuring the Discord Webhook)
+### Step 3 - Set up Discord Webhook (skip to Step 5 if not configuring the Discord Webhook)
 1. In your Discord server, right-click the channel you want alerts in
 2. Go to **Edit Channel → Integrations → Webhooks → New Webhook**
 4. Give it a name and profile picture, then click **Copy Webhook URL**
