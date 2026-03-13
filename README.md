@@ -61,7 +61,7 @@ A Google Sheets + Google Apps Script tool that automatically tracks CS2 case pri
 2. Right-click your role → **Copy Role ID** (requires Developer Mode)
 3. In the script, update the content field in `sendDiscordAlert`:
    ```js
-   content: "<@YOUR_ROLE_ID_HERE>",
+   content: "<@&YOUR_ROLE_ID_HERE>",
    ```
    ![RoleID](https://github.com/Lolfreak/cs2-case-price-tracker/blob/06af6a428ba7ab901011739b84bc1f71e7713b2f/readmepictures/discordrole.png)
 ### Step 5 - Build the Sheet
@@ -119,7 +119,7 @@ You can adjust these constants at the top of `cs2casetracker.gs`:
 |---|---|---|
 | `CSFLOAT_API_KEY` | `"YOUR_API_KEY_HERE"` | Your CSFloat API key |
 | `DISCORD_WEBHOOK_URL` | `"YOUR_WEBHOOK_URL_HERE"` | Your Discord webhook URL |
-| `ROLE_ID` | `@YOUR_ROLE_ID_HERE` | Your Discord Role ID |
+| `ROLE_ID` | `<@&YOUR_ROLE_ID_HERE>` | Your Discord Role ID |
 | `ALERT_THRESHOLD` | `0.10` | Price change % to trigger alert (0.10 = 10%) |
 | `SHEET_NAME` | `"CS2 Case Price Tracker"` | Name of the Google Sheet tab |
 
