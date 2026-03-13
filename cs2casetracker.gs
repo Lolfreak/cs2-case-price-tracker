@@ -390,9 +390,9 @@ function sendDiscordAlert(alerts) {
 
   const payload = {
     username: "CS2 Price Tracker",
-    content: "@YOUR_ROLE_ID_HERE", // add your discord role ID here
+    content: "<@&YOUR_ROLE_ID_HERE>", // add your discord role ID here
     embeds: [{
-      title: `🚨 CS2 Case Price Alert — ${alerts.length} case${alerts.length > 1 ? "s" : ""} moved 20%+`,
+      title: `🚨 CS2 Case Price Alert — ${alerts.length} case${alerts.length > 1 ? "s" : ""} moved ${ALERT_THRESHOLD * 100}%+`,
       color: alerts.some(a => a.direction === "up") ? 15158332 : 3066993, // red or green
       fields: fields,
       footer: { text: `Checked at ${timestamp}` },
