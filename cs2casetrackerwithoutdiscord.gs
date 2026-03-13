@@ -307,6 +307,6 @@ function onOpen() {
     .addItem("🔄 Refresh All Prices Now", "refreshAllPrices")
     .addSeparator()
     .addItem("⚙️ Setup Sheet (first time only)", "setupSheet")
-    .addItem("⏰ Schedule Daily 6 Hours Refresh", "createMidnightSgtTrigger")
+    .addItem("⏰ Schedule Automatic Referesh every 6 Hours", "createMidnightSgtTrigger")
     .addToUi();
 }

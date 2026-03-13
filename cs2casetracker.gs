@@ -327,7 +327,7 @@ function onOpen() {
     .addItem("🔄 Refresh All Prices Now", "refreshAllPrices")
     .addSeparator()
     .addItem("⚙️ Setup Sheet (first time only)", "setupSheet")
-    .addItem("⏰ Schedule Daily 6 Hours Refresh", "createMidnightSgtTrigger")
+    .addItem("⏰ Schedule Automatic Refresh every 6 hours", "createMidnightSgtTrigger")
     .addSeparator()
     .addItem("📸 Save Price Snapshot (baseline)", "savePricesSnapshot")
     .addItem("🔔 Check Price Alerts Now", "checkPriceAlerts")
