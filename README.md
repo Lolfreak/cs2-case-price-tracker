@@ -37,7 +37,7 @@ A Google Sheets + Google Apps Script tool that automatically tracks CS2 case pri
 1. Create a new **Google Sheet**
 2. Click **Extensions → Apps Script**
 ![AppScripts](https://github.com/Lolfreak/cs2-case-price-tracker/blob/46374d9e40c9abc1b7d4c8e77ed3bd3f5888bb3f/readmepictures/appscripts.png)
-4. Delete the default code and paste the entire contents of `Code.gs`
+4. Delete the default code and paste the entire contents of `cs2casetracker.gs` OR `cs2casetrackerwithoutdiscord.gs`
 5. On line 7, replace `"YOUR_API_KEY_HERE"` with your CSFloat API key:
    ```js
    const CSFLOAT_API_KEY = "YOUR_API_KEY_HERE";
