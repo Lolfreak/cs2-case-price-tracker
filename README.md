@@ -201,6 +201,11 @@ All 44 CS2 cases sorted from newest to oldest:
 I have added a test function to debug the Discord Webhook. Just click on run on the Apps Script to test your Webhook.
 
 ![DiscordWebhookTest](https://github.com/Lolfreak/cs2-case-price-tracker/blob/57fd51b9033f734ee076cbe4aace4e89edea8543/readmepictures/testdiscordwebhook.png)
+
+## Status
+
+This project is still under active development and will be updated everytime Valve decides to add new cases/terminals. Feedback will be much appreciated!
+
 ## License
 
 MIT License - feel free to fork and modify for your own use.
