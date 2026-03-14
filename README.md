@@ -76,12 +76,12 @@ A Google Sheets + Google Apps Script tool that automatically tracks CS2 case pri
 2. Wait ~5 minutes for all 44 cases to populate
 
 ### Step 7 - Schedule Automatic Refresh
-1. Click **📦 CS2 Tracker → ⏰ Schedule Daily Midnight Refresh**
+1. Click **📦 CS2 Tracker → ⏰ Schedule Automatic Refresh every 6 hours**
    - This schedules a refresh every 6 hours automatically
 
-### Step 8 - Set Up Price Alerts
+### Step 8 - Set Up Price Alerts (skip this if you did not configuring the Discord Alerts)
 1. Click **📦 CS2 Tracker → 📸 Save Price Snapshot** — saves today's prices as the baseline
-2. Click **📦 CS2 Tracker → ⏰ Schedule Automatic Alert Checks** — checks every 2 hours
+2. Click **📦 CS2 Tracker → ⏰ Schedule Automatic Alert Checks every 2 hours** — checks every 2 hours
 3. Optionally click **📦 CS2 Tracker → 🔔 Check Price Alerts Now** to test immediately
 
     ![FirstSetup](https://github.com/Lolfreak/cs2-case-price-tracker/blob/aa7c3e76df7653fd568aca34ee6ec223700bf7d5/readmepictures/cs2casetrackeroptions.png)
