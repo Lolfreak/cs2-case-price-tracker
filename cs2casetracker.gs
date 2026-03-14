@@ -294,6 +294,9 @@ function refreshAllPrices() {
     `Updated ${updated} cases. ${errors > 0 ? errors + " errors (check Status column)." : "All good!"}`,
     "✅ Refresh Complete", 5
   );
+  
+  // Update snapshot with latest prices
+  savePricesSnapshot();
 }
 
 // ─────────────────────────────────────────────
@@ -455,8 +458,6 @@ function checkPriceAlerts() {
   Logger.log(`Found ${alerts.length} alert(s).`);
   if (alerts.length > 0) sendDiscordAlert(alerts);
 
-  // Update snapshot with latest prices
-  savePricesSnapshot();
 }
 
 // ─────────────────────────────────────────────
