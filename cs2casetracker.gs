@@ -1,11 +1,11 @@
 // ============================================================
 // CS2 Case Price Tracker — Google Apps Script
-// Fetches lowest CSFloat listings every 6 hours
+// Fetches lowest CSFloat listings daily at midnight SGT (16:00 UTC)
 // Prices displayed in SGD
 // ============================================================
 
 const CSFLOAT_API_KEY = "YOUR_API_KEY_HERE"; // ← Paste your API key
-const SHEET_NAME = "CS2 Case Price Tracker";
+const SHEET_NAME = "CS2 Case Tracker";
 
 // All CS2 cases grouped by category (exact Steam market_hash_name)
 const CASES = [
@@ -186,39 +186,32 @@ function testDiscordWebhook() {
 // ─────────────────────────────────────────────
 function getCasePrice(marketHashName, usdToSgd) {
   const encodedName = encodeURIComponent(marketHashName);
-  const url = `https://csfloat.com/api/v1/listings?market_hash_name=${encodedName}&sort_by=lowest_price&limit=1&type=buy_now`; //specify to use lowest buy now prices rather than auction prices
+  const url = `https://csfloat.com/api/v1/listings?market_hash_name=${encodedName}&sort_by=lowest_price&limit=1&type=buy_now`;
   const options = {
     method: "GET",
     headers: { "Authorization": CSFLOAT_API_KEY },
     muteHttpExceptions: true,
   };
 
-  // Retry up to 3 times on rate limit
-  for (let attempt = 1; attempt <= 3; attempt++) {
-    try {
-      const response = UrlFetchApp.fetch(url, options);
-      const code = response.getResponseCode();
-      const body = response.getContentText();
+  try {
+    const response = UrlFetchApp.fetch(url, options);
+    const code = response.getResponseCode();
 
-      if (code === 429) {
-        Logger.log(`Rate limited on ${marketHashName}, attempt ${attempt}. Waiting 10s...`);
-        Utilities.sleep(10000); // wait 10 seconds before retry
-        continue;
-      }
-
-      if (code !== 200) {
-        return { usd: null, sgd: null, status: `Error ${code}` };
-      }
-
-      const data = JSON.parse(body);
-      return parsePriceResponse(data, usdToSgd);
-
-    } catch (e) {
-      return { usd: null, sgd: null, status: "Fetch error" };
+    if (code === 429) {
+      Logger.log(`Rate limited on ${marketHashName} — skipping.`);
+      return { usd: null, sgd: null, status: "Rate limited" };
     }
-  }
+    if (code !== 200) {
+      return { usd: null, sgd: null, status: `Error ${code}` };
+    }
 
-  return { usd: null, sgd: null, status: "Rate limited" };
+    const data = JSON.parse(response.getContentText());
+    return parsePriceResponse(data, usdToSgd);
+
+  } catch (e) {
+    Logger.log("Fetch error: " + e.message);
+    return { usd: null, sgd: null, status: "Fetch error" };
+  }
 }
 
 function parsePriceResponse(data, usdToSgd) {
@@ -233,39 +226,55 @@ function parsePriceResponse(data, usdToSgd) {
 // ─────────────────────────────────────────────
 // MAIN REFRESH — Updates all prices in sheet
 // ─────────────────────────────────────────────
+function refreshAllPricesPartOne() {
+  refreshBatch(0, 22, false);
+  // Wait 10 seconds then kick off Part 2
+  Utilities.sleep(10000);
+  refreshAllPricesPartTwo();
+}
+
+function refreshAllPricesPartTwo() {
+  refreshBatch(22, CASES.length, true);
+}
+
+// Keep this for manual full refresh from the menu
 function refreshAllPrices() {
+  refreshBatch(0, CASES.length, true);
+}
+
+function refreshBatch(startIndex, endIndex, saveSnapshot) {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   const sheet = ss.getSheetByName(SHEET_NAME);
+  if (!sheet) return;
 
-  if (!sheet) {
-    SpreadsheetApp.getUi().alert('Sheet not found. Please run Setup first.');
-    return;
-  }
-
-  // Get exchange rate first
   const usdToSgd = getUsdToSgd();
-  sheet.getRange("B2").setValue(usdToSgd.toFixed(4)).setFontColor("#333333").setFontWeight("normal");
+
+  // Only update exchange rate and timestamp on final batch
+  if (saveSnapshot) {
+    sheet.getRange("B2").setValue(usdToSgd.toFixed(4)).setFontColor("#333333").setFontWeight("normal");
+  }
 
   const lastRow = sheet.getLastRow();
   const nameCol = sheet.getRange(4, 1, lastRow - 3, 1).getValues();
 
-  let currentRow = 4;
   let updated = 0;
   let errors = 0;
+  let caseCount = 0;
 
   for (let i = 0; i < nameCol.length; i++) {
     const cellValue = nameCol[i][0];
-    currentRow = i + 4;
+    const currentRow = i + 4;
 
-    // Skip category header rows (they contain emoji or are empty)
-    if (!cellValue || cellValue.toString().startsWith("💰")) {
-  continue;
-}
+    if (!cellValue || cellValue.toString().startsWith("💰")) continue;
 
     const caseName = cellValue.toString().trim();
     if (!caseName) continue;
 
-    // Fetch price
+    // Only process cases in this batch range
+    if (caseCount < startIndex) { caseCount++; continue; }
+    if (caseCount >= endIndex) break;
+    caseCount++;
+
     const result = getCasePrice(caseName, usdToSgd);
 
     if (result.usd !== null) {
@@ -280,23 +289,18 @@ function refreshAllPrices() {
       errors++;
     }
 
-    // Small delay between requests to avoid rate limiting
-    Utilities.sleep(5000);
+    Utilities.sleep(4000);
   }
 
-  // Update last refresh timestamp (Singapore time)
-  const sgtOffset = 8 * 60 * 60 * 1000;
-  const sgtNow = new Date(new Date().getTime() + sgtOffset);
-  const timestamp = Utilities.formatDate(sgtNow, "UTC", "dd MMM yyyy, HH:mm") + " SGT";
-  sheet.getRange("E2").setValue(timestamp).setFontColor("#333333").setFontWeight("normal");
+  if (saveSnapshot) {
+    const sgtOffset = 8 * 60 * 60 * 1000;
+    const sgtNow = new Date(new Date().getTime() + sgtOffset);
+    const timestamp = Utilities.formatDate(sgtNow, "UTC", "dd MMM yyyy, HH:mm") + " SGT";
+    sheet.getRange("E2").setValue(timestamp).setFontColor("#333333").setFontWeight("normal");
+    savePricesSnapshot();
+  }
 
-  SpreadsheetApp.getActiveSpreadsheet().toast(
-    `Updated ${updated} cases. ${errors > 0 ? errors + " errors (check Status column)." : "All good!"}`,
-    "✅ Refresh Complete", 5
-  );
-  
-  // Update snapshot with latest prices
-  savePricesSnapshot();
+  Logger.log(`Batch done. Updated: ${updated}, Errors: ${errors}`);
 }
 
 // ─────────────────────────────────────────────
@@ -305,18 +309,20 @@ function refreshAllPrices() {
 function createMidnightSgtTrigger() {
   const triggers = ScriptApp.getProjectTriggers();
   for (const trigger of triggers) {
-    if (trigger.getHandlerFunction() === "refreshAllPrices") {
+    if (trigger.getHandlerFunction() === "refreshAllPricesPartOne" ||
+        trigger.getHandlerFunction() === "refreshAllPricesPartTwo") {
       ScriptApp.deleteTrigger(trigger);
     }
   }
 
-  ScriptApp.newTrigger("refreshAllPrices")
+  // Only schedule Part 1 — it will call Part 2 automatically
+  ScriptApp.newTrigger("refreshAllPricesPartOne")
     .timeBased()
     .everyHours(6)
     .create();
 
   SpreadsheetApp.getActiveSpreadsheet().toast(
-    "Price refresh scheduled every 6 hours.",
+    "Auto refresh scheduled every 6 hours. Part 1 will trigger Part 2 automatically.",
     "⏰ Trigger Set", 5
   );
 }
@@ -327,14 +333,15 @@ function createMidnightSgtTrigger() {
 function onOpen() {
   SpreadsheetApp.getUi()
     .createMenu("📦 CS2 Tracker")
-    .addItem("🔄 Refresh All Prices Now", "refreshAllPrices")
+    .addItem("🔄 Refresh Prices Part 1 (cases 1-22)", "refreshAllPricesPartOne")
+    .addItem("🔄 Refresh Prices Part 2 (cases 23-44)", "refreshAllPricesPartTwo")
     .addSeparator()
     .addItem("⚙️ Setup Sheet (first time only)", "setupSheet")
     .addItem("⏰ Schedule Automatic Refresh every 6 hours", "createMidnightSgtTrigger")
     .addSeparator()
     .addItem("📸 Save Price Snapshot (baseline)", "savePricesSnapshot")
     .addItem("🔔 Check Price Alerts Now", "checkPriceAlerts")
-    .addItem("⏰ Schedule Automatic Alert Checks every 4 hours", "createAlertTriggers")
+    .addItem("⏰ Schedule Automatic Alert Checks every 3 hours", "createAlertTriggers")
     .addToUi();
 }
 // ============================================================
@@ -392,8 +399,8 @@ function sendDiscordAlert(alerts) {
   const timestamp = Utilities.formatDate(sgtNow, "UTC", "dd MMM yyyy, HH:mm") + " SGT";
 
   const payload = {
-    username: "CS2 Price Tracker",
-    content: "<@&YOUR_ROLE_ID_HERE>", // add your discord role ID here
+    username: "CS2 Skins Gremlin",
+    content: "<@&1484477822616469606>",
     embeds: [{
       title: `🚨 CS2 Case Price Alert — ${alerts.length} case${alerts.length > 1 ? "s" : ""} moved ${ALERT_THRESHOLD * 100}%+`,
       color: alerts.some(a => a.direction === "up") ? 15158332 : 3066993, // red or green
@@ -418,7 +425,6 @@ function sendDiscordAlert(alerts) {
 // to last snapshot, sends Discord alert if needed
 // ─────────────────────────────────────────────
 function checkPriceAlerts() {
-  // Load last snapshot
   const raw = PropertiesService.getScriptProperties().getProperty("priceSnapshot");
   if (!raw) {
     Logger.log("No snapshot found. Saving current prices as baseline.");
@@ -427,29 +433,33 @@ function checkPriceAlerts() {
   }
   const snapshot = JSON.parse(raw);
 
-  // Get SGD rate
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.getSheetByName(SHEET_NAME);
+  if (!sheet) return;
+
   const usdToSgd = getUsdToSgd();
+  const lastRow = sheet.getLastRow();
+  const data = sheet.getRange(4, 1, lastRow - 3, 4).getValues();
   const alerts = [];
 
-  for (const caseName of CASES) {
-    const oldUsd = snapshot[caseName];
-    if (!oldUsd) continue;
+  for (const row of data) {
+    const name = row[0].toString().trim();
+    const currentUsd = row[2]; // Column C = USD price
 
-    // Fetch fresh price
-    const result = getCasePrice(caseName, usdToSgd);
-    Utilities.sleep(5000);
+    // Skip category headers and non-numeric prices
+    if (!name || typeof currentUsd !== "number") continue;
+    if (!snapshot[name]) continue;
 
-    if (result.usd === null) continue;
-
-    const changePct = (result.usd - oldUsd) / oldUsd;
+    const oldUsd = snapshot[name];
+    const changePct = (currentUsd - oldUsd) / oldUsd;
 
     if (Math.abs(changePct) >= ALERT_THRESHOLD) {
       alerts.push({
-        name: caseName,
+        name: name,
         oldSgd: (oldUsd * usdToSgd).toFixed(2),
-        newSgd: result.sgd.toFixed(2),
+        newSgd: (currentUsd * usdToSgd).toFixed(2),
         changePct: (changePct * 100).toFixed(1),
-        changeAmt: Math.abs(result.sgd - oldUsd * usdToSgd).toFixed(2),
+        changeAmt: Math.abs((currentUsd - oldUsd) * usdToSgd).toFixed(2),
         direction: changePct > 0 ? "up" : "down",
       });
     }
@@ -457,7 +467,6 @@ function checkPriceAlerts() {
 
   Logger.log(`Found ${alerts.length} alert(s).`);
   if (alerts.length > 0) sendDiscordAlert(alerts);
-
 }
 
 // ─────────────────────────────────────────────
@@ -472,14 +481,14 @@ function createAlertTriggers() {
     }
   }
 
-  // Check every 2 hours
+  // Check every 3 hours
   ScriptApp.newTrigger("checkPriceAlerts")
     .timeBased()
-    .everyHours(2)
+    .everyHours(3)
     .create();
 
   SpreadsheetApp.getActiveSpreadsheet().toast(
-    "Price alert checks scheduled every 2 hours.",
+    "Price alert checks scheduled every 3 hours.",
     "⏰ Alert Trigger Set", 5
   );
 }
